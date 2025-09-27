@@ -3,263 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comment System - Minimal Demo</title>
+    <title>Comment System</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .add-comment {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #555;
-        }
-
-        .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #e1e8ed;
-            border-radius: 5px;
-            font-size: 14px;
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #3498db;
-        }
-
-        .btn {
-            background: #3498db;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: background-color 0.3s;
-            margin-right: 10px;
-        }
-
-        .btn:hover {
-            background: #2980b9;
-        }
-
-        .btn-danger {
-            background: #e74c3c;
-        }
-
-        .btn-danger:hover {
-            background: #c0392b;
-        }
-
-        .btn-success {
-            background: #27ae60;
-        }
-
-        .btn-success:hover {
-            background: #229954;
-        }
-
-        .comments-list {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        .comment {
-            padding: 20px;
-            border-bottom: 1px solid #e1e8ed;
-            transition: background-color 0.3s;
-        }
-
-        .comment:hover {
-            background-color: #f8f9fa;
-        }
-
-        .comment:last-child {
-            border-bottom: none;
-        }
-
-        .comment-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .comment-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 12px;
-            object-fit: cover;
-            background: #e1e8ed;
-        }
-
-        .comment-info {
-            flex: 1;
-        }
-
-        .comment-author {
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 2px;
-        }
-
-        .comment-date {
-            font-size: 12px;
-            color: #7f8c8d;
-        }
-
-        .comment-text {
-            margin: 10px 0;
-            color: #555;
-            line-height: 1.6;
-        }
-
-        .comment-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-            align-items: center;
-        }
-
-        .comment-likes {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: #7f8c8d;
-            font-size: 14px;
-        }
-
-        .edit-form {
-            display: none;
-            margin-top: 15px;
-        }
-
-        .edit-form.active {
-            display: block;
-        }
-
-        .edit-form textarea {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #e1e8ed;
-            border-radius: 5px;
-            font-size: 14px;
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        .edit-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #7f8c8d;
-        }
-
-        .error {
-            background: #e74c3c;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
-        }
-
-        .success {
-            background: #27ae60;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
-        }
-
-        .demo-section {
-            background: #e8f4fd;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border-left: 4px solid #3498db;
-        }
-
-        .demo-section h3 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .demo-section p {
-            color: #555;
-            margin-bottom: 5px;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; margin-bottom: 30px; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .add-comment { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group textarea { width: 100%; padding: 10px; border: 2px solid #e1e8ed; border-radius: 5px; font-size: 14px; resize: vertical; min-height: 100px; }
+        .form-group textarea:focus { outline: none; border-color: #3498db; }
+        .btn { background: #3498db; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; margin-right: 10px; }
+        .btn:hover { background: #2980b9; }
+        .btn-danger { background: #e74c3c; }
+        .btn-danger:hover { background: #c0392b; }
+        .btn-success { background: #27ae60; }
+        .btn-success:hover { background: #229954; }
+        .comments-list { background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden; }
+        .comment { padding: 20px; border-bottom: 1px solid #e1e8ed; }
+        .comment:last-child { border-bottom: none; }
+        .comment-header { display: flex; align-items: center; margin-bottom: 10px; }
+        .comment-avatar { width: 40px; height: 40px; border-radius: 50%; margin-right: 12px; object-fit: cover; background: #e1e8ed; }
+        .comment-info { flex: 1; }
+        .comment-author { font-weight: 600; color: #2c3e50; margin-bottom: 2px; }
+        .comment-date { font-size: 12px; color: #7f8c8d; }
+        .comment-text { margin: 10px 0; color: #555; line-height: 1.6; }
+        .comment-actions { display: flex; gap: 10px; margin-top: 15px; align-items: center; }
+        .comment-likes { display: flex; align-items: center; gap: 5px; color: #7f8c8d; font-size: 14px; }
+        .edit-form { display: none; margin-top: 15px; }
+        .edit-form.active { display: block; }
+        .edit-form textarea { width: 100%; padding: 10px; border: 2px solid #e1e8ed; border-radius: 5px; font-size: 14px; resize: vertical; min-height: 80px; }
+        .edit-actions { display: flex; gap: 10px; margin-top: 10px; }
+        .loading { text-align: center; padding: 20px; color: #7f8c8d; }
+        .error { background: #e74c3c; color: white; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        .success { background: #27ae60; color: white; padding: 10px; border-radius: 5px; margin: 10px 0; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>💬 Comment System - Minimal Demo</h1>
-            <p>Django REST API + Simple HTML/JavaScript Frontend</p>
-        </div>
-
-        <div class="demo-section">
-            <h3>🎯 Available Functions</h3>
-            <p><strong>✅ GET:</strong> List all comments with author, date, likes, and images</p>
-            <p><strong>✅ POST:</strong> Add new comments (author auto-set to "Admin")</p>
-            <p><strong>✅ PATCH:</strong> Edit existing comment text inline</p>
-            <p><strong>✅ DELETE:</strong> Remove comments with confirmation</p>
-            <p><strong>✅ JSONField:</strong> Images stored as JSON in database</p>
-            <p><strong>✅ CORS:</strong> No cross-origin issues</p>
+            <h1>💬 Comment System</h1>
+            <p>Django REST API + HTML/JavaScript</p>
         </div>
 
         <div class="add-comment">
             <h2>Add New Comment</h2>
             <form id="addCommentForm">
                 <div class="form-group">
-                    <label for="commentText">Comment:</label>
                     <textarea id="commentText" name="text" placeholder="Write your comment here..." required></textarea>
                 </div>
                 <button type="submit" class="btn btn-success">Add Comment</button>
@@ -278,7 +68,6 @@
         const API_BASE_URL = 'http://localhost:8000/api';
         let comments = [];
 
-        // Utility functions
         function formatDate(dateString) {
             const date = new Date(dateString);
             return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
@@ -287,12 +76,9 @@
         function showMessage(message, type = 'success') {
             const messageDiv = document.getElementById('message');
             messageDiv.innerHTML = `<div class="${type}">${message}</div>`;
-            setTimeout(() => {
-                messageDiv.innerHTML = '';
-            }, 3000);
+            setTimeout(() => { messageDiv.innerHTML = ''; }, 3000);
         }
 
-        // API functions
         async function fetchComments() {
             try {
                 const response = await fetch(`${API_BASE_URL}/comments/`);
@@ -309,9 +95,7 @@
             try {
                 const response = await fetch(`${API_BASE_URL}/comments/`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ text })
                 });
                 
@@ -330,9 +114,7 @@
             try {
                 const response = await fetch(`${API_BASE_URL}/comments/${id}/`, {
                     method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ text })
                 });
                 
@@ -368,7 +150,6 @@
             }
         }
 
-        // Render functions
         function renderComments() {
             const commentsDiv = document.getElementById('comments');
             const loadingDiv = document.getElementById('loading');
@@ -383,8 +164,7 @@
             commentsDiv.innerHTML = comments.map(comment => `
                 <div class="comment" data-id="${comment.id}">
                     <div class="comment-header">
-                        <img src="${getAvatarUrl(comment)}" 
-                             alt="${comment.author}" class="comment-avatar">
+                        <img src="${getAvatarUrl(comment)}" alt="${comment.author}" class="comment-avatar">
                         <div class="comment-info">
                             <div class="comment-author">${comment.author || 'Admin'}</div>
                             <div class="comment-date">${formatDate(comment.created_at)}</div>
@@ -417,7 +197,6 @@
             return `https://via.placeholder.com/40x40/e1e8ed/7f8c8d?text=${(comment.author || 'A').charAt(0).toUpperCase()}`;
         }
 
-        // Edit functions
         function startEdit(id) {
             const editForm = document.getElementById(`edit-form-${id}`);
             const editText = document.getElementById(`edit-text-${id}`);
@@ -443,7 +222,6 @@
             cancelEdit(id);
         }
 
-        // Event listeners
         document.getElementById('addCommentForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const text = document.getElementById('commentText').value.trim();
@@ -457,7 +235,6 @@
             document.getElementById('addCommentForm').reset();
         });
 
-        // Initialize
         fetchComments();
     </script>
 </body>
