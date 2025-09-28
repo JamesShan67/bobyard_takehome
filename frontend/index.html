@@ -315,13 +315,13 @@
                 serverStatus.style.display = 'block';
                 serverStatus.style.background = '#e74c3c';
                 serverStatus.style.color = 'white';
-                serverStatus.textContent = '⚠️ Server not reachable. Make sure the backend is running on port 3002.';
+                serverStatus.textContent = 'Server not reachable';
                 return;
             } else {
                 serverStatus.style.display = 'block';
                 serverStatus.style.background = '#27ae60';
                 serverStatus.style.color = 'white';
-                serverStatus.textContent = '✅ Connected to server';
+                serverStatus.textContent = 'Connected to server';
                 setTimeout(() => {
                     serverStatus.style.display = 'none';
                 }, 3000);
