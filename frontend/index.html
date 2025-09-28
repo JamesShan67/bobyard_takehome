@@ -63,7 +63,7 @@
     </div>
 
     <script>
-        const API_BASE_URL = 'http://localhost:8001/api';
+        const API_BASE_URL = 'http://localhost:3002/api';
         let comments = [];
 
         function formatDate(dateString) {
@@ -91,14 +91,26 @@
 
         async function addComment(text) {
             try {
+                console.log('Attempting to add comment:', text);
+                console.log('API URL:', `${API_BASE_URL}/comments/`);
+                
                 const response = await fetch(`${API_BASE_URL}/comments/`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ text })
                 });
                 
-                if (!response.ok) throw new Error('Failed to add comment');
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Response error:', errorText);
+                    throw new Error(`Failed to add comment: ${response.status} ${errorText}`);
+                }
+                
                 const newComment = await response.json();
+                console.log('New comment created:', newComment);
                 comments.unshift(newComment);
                 renderComments();
                 showMessage('Comment added!');
