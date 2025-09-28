@@ -43,6 +43,7 @@
     <div class="container">
         <div class="header">
             <h1>comment</h1>
+            <div id="serverStatus" style="font-size: 12px; margin-top: 10px; padding: 5px; border-radius: 3px; display: none;"></div>
         </div>
 
         <div class="add-comment">
@@ -66,6 +67,20 @@
         const API_BASE_URL = 'http://localhost:3002/api';
         let comments = [];
 
+        // Check if server is reachable
+        async function checkServerConnection() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/comments/`, {
+                    method: 'HEAD',
+                    timeout: 5000
+                });
+                return response.ok;
+            } catch (error) {
+                console.error('Server connection check failed:', error);
+                return false;
+            }
+        }
+
         function formatDate(dateString) {
             const date = new Date(dateString);
             return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
@@ -79,13 +94,32 @@
 
         async function fetchComments() {
             try {
-                const response = await fetch(`${API_BASE_URL}/comments/`);
-                if (!response.ok) throw new Error('Failed to fetch comments');
+                console.log('Fetching comments from:', `${API_BASE_URL}/comments/`);
+                const response = await fetch(`${API_BASE_URL}/comments/`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                
                 comments = await response.json();
+                console.log('Comments loaded:', comments.length);
                 renderComments();
             } catch (error) {
                 console.error('Error fetching comments:', error);
-                showMessage('Failed to load comments', 'error');
+                showMessage(`Failed to load comments: ${error.message}`, 'error');
+                // Hide loading and show error state
+                const loadingDiv = document.getElementById('loading');
+                const commentsDiv = document.getElementById('comments');
+                if (loadingDiv) loadingDiv.style.display = 'none';
+                if (commentsDiv) commentsDiv.innerHTML = '<div class="loading">Error loading comments. Please refresh the page.</div>';
             }
         }
 
@@ -96,7 +130,10 @@
                 
                 const response = await fetch(`${API_BASE_URL}/comments/`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
                     body: JSON.stringify({ text })
                 });
                 
@@ -106,17 +143,17 @@
                 if (!response.ok) {
                     const errorText = await response.text();
                     console.error('Response error:', errorText);
-                    throw new Error(`Failed to add comment: ${response.status} ${errorText}`);
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
                 }
                 
                 const newComment = await response.json();
                 console.log('New comment created:', newComment);
                 comments.unshift(newComment);
                 renderComments();
-                showMessage('Comment added!');
+                showMessage('Comment added successfully!');
             } catch (error) {
                 console.error('Error adding comment:', error);
-                showMessage('Failed to add comment', 'error');
+                showMessage(`Failed to add comment: ${error.message}`, 'error');
             }
         }
 
@@ -232,6 +269,19 @@
             cancelEdit(id);
         }
 
+        // Add retry mechanism for network requests
+        async function retryRequest(fn, maxRetries = 3, delay = 1000) {
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    return await fn();
+                } catch (error) {
+                    console.log(`Attempt ${i + 1} failed:`, error.message);
+                    if (i === maxRetries - 1) throw error;
+                    await new Promise(resolve => setTimeout(resolve, delay * (i + 1)));
+                }
+            }
+        }
+
         document.getElementById('addCommentForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const text = document.getElementById('commentText').value.trim();
@@ -241,11 +291,48 @@
                 return;
             }
             
-            await addComment(text);
-            document.getElementById('addCommentForm').reset();
+            // Disable form during submission
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Adding...';
+            
+            try {
+                await retryRequest(() => addComment(text));
+                document.getElementById('addCommentForm').reset();
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
         });
 
-        fetchComments();
+        // Check server status and load comments
+        async function initializeApp() {
+            const serverStatus = document.getElementById('serverStatus');
+            
+            const isConnected = await checkServerConnection();
+            if (!isConnected) {
+                serverStatus.style.display = 'block';
+                serverStatus.style.background = '#e74c3c';
+                serverStatus.style.color = 'white';
+                serverStatus.textContent = '⚠️ Server not reachable. Make sure the backend is running on port 3002.';
+                return;
+            } else {
+                serverStatus.style.display = 'block';
+                serverStatus.style.background = '#27ae60';
+                serverStatus.style.color = 'white';
+                serverStatus.textContent = '✅ Connected to server';
+                setTimeout(() => {
+                    serverStatus.style.display = 'none';
+                }, 3000);
+            }
+            
+            // Load comments with retry
+            retryRequest(fetchComments);
+        }
+
+        // Initialize the app
+        initializeApp();
     </script>
 </body>
 </html>
