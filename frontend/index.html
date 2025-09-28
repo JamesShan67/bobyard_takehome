@@ -42,17 +42,15 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>💬 Comment System</h1>
-            <p>Django REST API + HTML/JavaScript</p>
+            <h1>comment</h1>
         </div>
 
         <div class="add-comment">
-            <h2>Add New Comment</h2>
             <form id="addCommentForm">
                 <div class="form-group">
-                    <textarea id="commentText" name="text" placeholder="Write your comment here..." required></textarea>
+                    <textarea id="commentText" name="text" placeholder="write a comment" required></textarea>
                 </div>
-                <button type="submit" class="btn btn-success">Add Comment</button>
+                <button type="submit" class="btn btn-success">add comment</button>
             </form>
         </div>
 
@@ -65,7 +63,7 @@
     </div>
 
     <script>
-        const API_BASE_URL = 'http://localhost:8000/api';
+        const API_BASE_URL = 'http://localhost:8001/api';
         let comments = [];
 
         function formatDate(dateString) {
